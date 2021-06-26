@@ -1,128 +1,79 @@
-var helicopterIMG, helicopterSprite, packageSprite,packageIMG;
-var packageBody,ground;
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
 const Body = Matter.Body;
-const setStatic=Matter.Body.setStatic
+
+var starImg, fairyImg, bgImg;
+var fairy , fairyVoice;
+var star, starBody;
 
 function preload()
 {
-	helicopterIMG=loadImage("helicopter.png")
-	packageIMG=loadImage("package.png")
+	starImg = loadImage("images/star.png");
+	fairyImg = loadAnimation("images/fairyImage1.png","images/fairyImage2.png");
+	bgImg = loadImage("images/starNight.png");
+	fairyVoice = loadSound("sound/JoyMusic.mp3");
+
 }
 
 function setup() {
-	createCanvas(800, 700);
-	rectMode(CENTER);
-	
+	createCanvas(800, 750);
 
-	packageSprite=createSprite(width/2, 80, 10,10);
-	packageSprite.addImage(packageIMG)
-	packageSprite.scale=0.2
+	fairyVoice.play();
 
-	helicopterSprite=createSprite(width/2, 200, 10,10);
-	helicopterSprite.addImage(helicopterIMG)
-	helicopterSprite.scale=0.6
+	fairy = createSprite(130, 520);
+	fairy.addAnimation("fairyflying",fairyImg);  
+	fairy.scale =0.25;
 
-	groundSprite=createSprite(width/2, height-35, width,10);
-	groundSprite.shapeColor=color(255)
-
+	star = createSprite(650,30);
+	star.addImage(starImg);
+	star.scale = 0.2;
 
 	engine = Engine.create();
 	world = engine.world;
 
-	var pac={
-		
-		restitution:0.1, 
-			isStatic:true	
-		
-	}
-	  
-
-	packageBody = Bodies.circle(width/2 , 200 , 5 ,pac );
-	World.add(world, packageBody);
+	starBody = Bodies.circle(650 , 30 , 5 , {restitution:0.5, isStatic:true});
+	World.add(world, starBody);
 	
-
-	//Create a Ground
-	ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
- 	World.add(world, ground);
-
- 	boxPosition=width/2-100
- 	boxY=610;
-
-
- 	boxleftSprite=createSprite(boxPosition, boxY, 20,100);
- 	boxleftSprite.shapeColor=color(255,0,0);
-
- 	boxLeftBody = Bodies.rectangle(boxPosition+20, boxY, 20,100 , {isStatic:true} );
- 	World.add(world, boxLeftBody);
-
- 	boxBase=createSprite(boxPosition+100, boxY+40, 200,20);
- 	boxBase.shapeColor=color(255,0,0);
-
- 	boxBottomBody = Bodies.rectangle(boxPosition+100, boxY+45-20, 200,20 , {isStatic:true} );
- 	World.add(world, boxBottomBody);
-
- 	boxleftSprite=createSprite(boxPosition+200 , boxY, 20,100);
- 	boxleftSprite.shapeColor=color(255,0,0);
-
- 	boxRightBody = Bodies.rectangle(boxPosition+200-20 , boxY, 20,100 , {isStatic:true} );
- 	World.add(world, boxRightBody);
-
-
 	Engine.run(engine);
-  
 
 }
 
 
 function draw() {
-  rectMode(CENTER);
-  background(0);
-  Engine.update(engine);
-  packageSprite.visible=false
- 
-  
-   packageSprite.x =packageBody.position.x
-   packageSprite.y=packageBody.position.y 
+  background(bgImg);
+ // console.log(starBody)
+star.x=starBody.position.x;
+star.y=starBody.position.y;
 
-if(keyCode===DOWN_ARROW){
-	packageSprite.visible=true;
 
-}
-  
-  console.log(packageBody.position.y);
-  
+/*if(fairy.x<=630&&starBody.position.y<=430){
+	Matter.Body.setStatic(starBody,true)
+})*/
+keyPressed()
+
   drawSprites();
-  keyPressed()
-  
- 
+  console.log(mouseX,mouseY,fairy.x)
 }
+
 function keyPressed() {
-
-
+	//write code here
 	if(keyCode===LEFT_ARROW){ 
-		helicopterSprite.x=helicopterSprite.x-4
-		//packageBody.visible=false;
-	
-} 
-if(keyCode===RIGHT_ARROW){
-	helicopterSprite.x=helicopterSprite.x+4
+		fairy.x=fairy.x-5	
+	} 
+	if(keyCode===RIGHT_ARROW){
+		fairy.x=fairy.x+5
+		}
+	if(keyCode===DOWN_ARROW){
+		if(fairy.x>=500&&fairy.x<=535&&starBody.position.y>=470){
+			Matter.Body.setStatic(starBody,true)	
+			console.log(starBody.position.y)
+		}else{
+			Matter.Body.setStatic(starBody,false)
+			
+		}
+	  }
 	
 	}
-if(keyCode===DOWN_ARROW){
-
-
-  setStatic(packageBody,false)
 	
-//	packageBody.pack;
-packageSprite.visible=true
-
-	
-  }
-
-
-}
-
 
